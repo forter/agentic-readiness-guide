@@ -1,0 +1,11 @@
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Just in case anyone runs tooling locally
+node_modules/
+
+# Audit reports — generated locally, never committed
+report/

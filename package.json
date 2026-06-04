@@ -1,0 +1,15 @@
+{
+  "name": "agentic-readiness-guide",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Frontmatter + rubric validator for the Agentic Readiness Guide. The guide itself is markdown in content/ and audit/; this package only validates structure.",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs"
+  },
+  "devDependencies": {
+    "gray-matter": "^4.0.3",
+    "zod": "^3.23.8"
+  }
+}
