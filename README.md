@@ -1,4 +1,4 @@
-# Forter Agentic Readiness Guide
+# Forter Agentic Readiness Guide 
 
 A practical, opinionated guide to making any website **agent-ready** - discoverable, comprehensible, trustworthy, actionable, and experiential - so that LLM-driven agents (and the humans behind them) can find, understand, trust, and act on your product.
 
