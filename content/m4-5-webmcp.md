@@ -13,7 +13,7 @@ forterApplies: 'partial'
 # 4.5  Expose tools with WebMCP
 
 ## What & why
-WebMCP is the lowest-friction way to make a website agentic. Where an MCP server ([4.4](./m4-4-mcp-server.md)) is backend infrastructure - WebMCP is a browser API. A few lines of JavaScript on a page register **tools**, and a browser-resident agent (Chrome with Gemini, or a local model) calls them directly, inside the user's own session, with no server, no separate auth, and no API program required.
+WebMCP (the W3C proposal) is the lowest-friction way to make a website agentic. Where an MCP server ([4.4](./m4-4-mcp-server.md)) is backend infrastructure - WebMCP is a browser API. A few lines of JavaScript on a page register **tools**, and a browser-resident agent (Chrome with Gemini, or a local model) calls them directly, inside the user's own session, with no server, no separate auth, and no API program required.
 
 It is an emerging Google and Microsoft W3C proposal - early, but cheap to adopt. It reuses the same tool model as MCP (`name`, `description`, `inputSchema`, `annotations`), so the descriptions and schemas written for [4.4](./m4-4-mcp-server.md) carry straight over - and a site with no MCP server at all can still adopt WebMCP on its own.
 

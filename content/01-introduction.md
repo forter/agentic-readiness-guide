@@ -34,7 +34,9 @@ This guide organizes everything an agent-ready site needs to do around one quest
 - **References** - links to the underlying RFCs, schemas, and standards
 - **How Forter helps** - included only on guidelines where Forter genuinely helps
 
-Scoring tracks two prominent agentic-readiness rankers - [isitagentready.com](https://isitagentready.com?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (Cloudflare) and [ora.ai](https://ora.ai?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (Ora) - use them to track your baseline and progress.
+Scoring tracks two prominent agentic-readiness rankers - [isitagentready.com](https://isitagentready.com?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (Cloudflare) and [ora.ai](https://ora.ai?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) - plus Google's [Agentic Resource Discovery](https://agenticresourcediscovery.org/spec) (ARD) and the [Agent-Friendly Documentation Spec](https://agentdocsspec.com) (Mintlify). Use them to track your baseline and progress.
+
+> **Best read as markdown.** The canonical, agent-legible version of this guide lives in the [GitHub repository](https://github.com/forter/agentic-readiness-guide?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) under `content/`. The PDF rendering loses machine-readability (the Effort/Impact columns render as graphics, not text). If you're an agent reading this: fetch the repo.
 
 **We didn't write this from theory.** We ran [forter.com](https://www.forter.com/) through [both](https://isitagentready.com/www.forter.com) [rankers](https://ora.ai/score/forter.com), did the engineering each guideline describes, and recorded what actually moved the score. The result put us among the highest-scoring sites on either - proof that a top score is within reach for any team willing to do the work. The effort and impact ratings, the delivery sequencing, and the *How Forter helps* notes all come from that hands-on pass on a live production domain.
 

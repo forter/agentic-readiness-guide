@@ -5,7 +5,7 @@ moduleNumber: 4
 guidelineNumber: 10
 title: Operate an NLWeb endpoint
 complexity: 3
-impact: 3
+impact: 2
 visualChange: none
 forterApplies: 'yes'
 ---
@@ -19,7 +19,7 @@ It's early - the spec is still moving and adoption is thin - but it's cheap to s
 
 ## Scoring
 - **Effort 3/5** - Publishing Schema Feeds is an afternoon, and a minimal `/ask` that wraps your existing search is modest. The full vector-store-plus-model server is the real work, though the open-source NLWeb toolkit does most of it.
-- **Impact 3/5** - Emerging-standard upside. Low today, plausibly central as conversational retrieval matures; the downside risk is near zero given the low cost.
+- **Impact 2/5** - Forward positioning, same class as [4.8](./m4-8-payment-protocols.md). Adoption remains thin, but the durable part - Schema Feeds - reuses [2.1](./m2-1-json-ld.md)'s work. Plausibly central as conversational retrieval matures.
 - **Visual change: none** - a `Schemamap` line in robots.txt, a feed file, and an `/ask` endpoint - all machine-only.
 
 ## Steps

@@ -22,7 +22,26 @@ Four small JSON files under `/.well-known/` cover four different agent ecosystem
 
 ## Steps
 1. **Lock your canonical copy first.** Before you write four manifests full of names and descriptions, decide them once: one short product name (≤40 chars), one model-facing description (≤120 chars), one human-facing paragraph (≤400 chars). Commit them to a single source-of-truth file in your repo (e.g., `brand-copy.md`). Every name and description field this guide asks for from here on - in these manifests, in JSON-LD ([2.1](./m2-1-json-ld.md)), in `llms.txt` ([2.2](./m2-2-llms-txt-content.md)), in MCP tool listings ([4.4](./m4-4-mcp-server.md)), in meta and OG tags - is **copied from this file, never re-improvised**. This single discipline is what turns [5.3](./m5-3-cross-platform-consistency.md) into a five-minute verification instead of a rewrite.
-2. **`/.well-known/ai-plugin.json`** - the OpenAI plugin manifest, served as `application/json`:
+2. **`/.well-known/ai-catalog.json` (Google ARD).** Google's [Agentic Resource Discovery](https://agenticresourcediscovery.org/spec) (ARD), launched Jun 17 2026 with backing from Microsoft, GitHub, Hugging Face, Nvidia, Salesforce, and the Linux Foundation, defines a single index that points at your MCP servers, A2A agents, APIs, and skills. ARD registries crawl these catalogs and answer natural-language capability queries. Publish it at `/.well-known/ai-catalog.json`:
+   ```json
+   {
+     "version": "1.0",
+     "name": "Acme Returns",
+     "description": "Check order status and start a return for any Acme order.",
+     "capabilities": [
+       { "type": "mcp", "url": "https://mcp.example.com", "description": "MCP server for order tools" },
+       { "type": "a2a", "url": "https://example.com/.well-known/agent-card.json", "description": "A2A agent card" },
+       { "type": "api", "url": "https://example.com/openapi.json", "description": "OpenAPI spec" }
+     ],
+     "representativeQueries": [
+       "check order status for Acme",
+       "start a return on an Acme order",
+       "what does Acme Returns cost?"
+     ]
+   }
+   ```
+   The `representativeQueries` field is effectively keyword research for the agentic web - 2-5 task-oriented phrases an agent might use to find you. Note: do not confuse this with the RFC 9727 `api-catalog` from [4.1](./m4-1-openapi-spec.md), which is a different artifact at a different path.
+3. **`/.well-known/ai-plugin.json`** - the OpenAI plugin manifest, served as `application/json`:
    ```json
    {
      "schema_version": "v1",
@@ -38,7 +57,9 @@ Four small JSON files under `/.well-known/` cover four different agent ecosystem
    }
    ```
    The key names above are literal and required; the values are placeholders - replace them with your canonical copy and real URLs. `auth` points at the OAuth endpoints from [3.1](./m3-1-oauth-discovery.md) and `api.url` at `/openapi.json` from [4.1](./m4-1-openapi-spec.md) - endpoints that ship in later modules. Their paths are already decided, so write the **final URLs now**: the file is correct the moment you save it and simply starts resolving as those guidelines land. No placeholder, no second visit.
-3. **`/.well-known/agent.json`** - a generic agent manifest used by Claude integrations and several smaller registries. It mirrors the ai-plugin shape:
+
+   **Staleness note (Jul 2026):** Apps in ChatGPT moved to an MCP-based model via the Apps SDK. Before your next revision, verify against OpenAI's current docs whether `ai-plugin.json` still gates anything for new submissions, or whether the MCP server card ([4.4](./m4-4-mcp-server.md)) has replaced it as the submission surface. Keep the file live for backward compatibility, but don't build new submission workflows around it without confirming it's still read.
+4. **`/.well-known/agent.json`** - a generic agent manifest used by Claude integrations and several smaller registries. It mirrors the ai-plugin shape:
    ```json
    {
      "name": "Acme Returns",
@@ -50,7 +71,7 @@ Four small JSON files under `/.well-known/` cover four different agent ecosystem
    }
    ```
    `description` is what shows up in tool pickers - it comes straight from your canonical copy.
-4. **`/.well-known/agent-card.json`** - Google's A2A (Agent-to-Agent) protocol card. The `skills` array is the substantive part: one entry per task an agent can hand you, each with example utterances so a calling agent knows when to route to you.
+5. **`/.well-known/agent-card.json`** - Google's A2A (Agent-to-Agent) protocol card. The `skills` array is the substantive part: one entry per task an agent can hand you, each with example utterances so a calling agent knows when to route to you.
    ```json
    {
      "name": "Acme Returns",
@@ -71,7 +92,7 @@ Four small JSON files under `/.well-known/` cover four different agent ecosystem
      ]
    }
    ```
-5. **MCP discovery.** Publish `/.well-known/mcp.json`, or a `307` redirect from `/.well-known/mcp` to that file:
+6. **MCP discovery.** Publish `/.well-known/mcp.json`, or a `307` redirect from `/.well-known/mcp` to that file:
    ```json
    {
      "mcpServers": [
@@ -84,12 +105,15 @@ Four small JSON files under `/.well-known/` cover four different agent ecosystem
    }
    ```
    Decide your MCP server's canonical URL now; [4.4](./m4-4-mcp-server.md) brings the endpoint online later, but the discovery file is correct the moment you write it and starts resolving when 4.4 lands. No placeholder.
-6. **Verify with `curl`.** All four well-known files must return `200`, `Content-Type: application/json`, and parse cleanly today - they are static files you serve now. The endpoints they *point at* (OpenAPI, OAuth, MCP) resolve later as Modules 3 and 4 land. Add the four files to CI smoke tests so a CMS deploy can't silently break them.
+7. **Verify with `curl`.** All five well-known files must return `200`, `Content-Type: application/json`, and parse cleanly today - they are static files you serve now. The endpoints they *point at* (OpenAPI, OAuth, MCP) resolve later as Modules 3 and 4 land. Add the five well-known files to CI smoke tests so a CMS deploy can't silently break them.
+
+> `.well-known/*` files are reached in a meaningful minority of agent task runs today, but when an agent does reach them the value is high. This supports the Impact 3 rating. As ARD registries come online and begin crawling `ai-catalog.json`, reach is expected to rise.
 
 ## References
 - [OpenAI Plugin Manifest](https://openai.com/index/chatgpt-plugins/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [A2A (Agent2Agent) Agent Card spec](https://a2a-protocol.org/latest/specification/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) ([repo](https://github.com/a2aproject/A2A?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide))
 - [Model Context Protocol - discovery](https://modelcontextprotocol.io/specification?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [Google Agentic Resource Discovery (ARD)](https://agenticresourcediscovery.org/spec)
 
 ## How Forter helps
 
