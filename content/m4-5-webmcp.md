@@ -17,9 +17,11 @@ WebMCP (the W3C proposal) is the lowest-friction way to make a website agentic. 
 
 It is an emerging Google and Microsoft W3C proposal - early, but cheap to adopt. It reuses the same tool model as MCP (`name`, `description`, `inputSchema`, `annotations`), so the descriptions and schemas written for [4.4](./m4-4-mcp-server.md) carry straight over - and a site with no MCP server at all can still adopt WebMCP on its own.
 
+**Where it actually stands (late 2026).** Be precise about this one, because the marketing around it is not. WebMCP is *not* a W3C Recommendation and has not entered the Recommendation track: the current text is a Draft Community Group Report from the Web Machine Learning CG, edited by Microsoft and Google. Chrome has run a public origin trial from Chrome 149 through 156 and Edge ships it behind a flag; Firefox and Safari take part in discussions without committing. Distribution has moved faster than consumption - as of August 2026 the API is reportedly default-on across Shopify storefronts and Cloudflare-fronted sites, and Expedia, Booking.com, Target and Credit Karma are experimenting - but **no mainstream agent calls WebMCP tools yet**: Claude, ChatGPT Agent, Perplexity and Gemini still drive pages through the DOM or screenshots. So register your tools now because it is hours of work and positions you for the moment consumption arrives, not because traffic is waiting on the other side today.
+
 ## Scoring
 - **Effort 2/5** - Front-end work only: register tools in page JavaScript, write clear descriptions and input schemas. No server, no auth server, no OpenAPI prerequisite. The spec is still maturing, so budget for some API churn.
-- **Impact 3/5** - Emerging-standard upside. Browser support is still landing, but WebMCP is the cheapest path to being callable by in-browser agents, and the downside risk is near zero given the cost.
+- **Impact 3/5** - Emerging-standard upside, and deliberately *not* scored higher. The surface is now widely deployed (default-on at Shopify and Cloudflare) but not yet widely *consumed* - no mainstream agent invokes WebMCP tools today. It remains the cheapest path to being callable by in-browser agents, and the downside risk is near zero given the cost; revisit this score when a major agent runtime starts calling it.
 - **Visual change: none** - tools are registered in JavaScript; the page renders exactly as before.
 
 ## Steps
