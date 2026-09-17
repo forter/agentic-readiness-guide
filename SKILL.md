@@ -81,7 +81,7 @@ Keep raw probe output in `./report/m{M}-{N}.out` so you can re-score without re-
 
 **Emit progress text.** The user cannot read tool output in real time the same way you can - emit a one-sentence text message before each probe batch so they see what's happening. Suggested cadence: one line on start ("Resolving target…"), one line per probe batch ("Probing m1-_ discovery files…", "Probing m4-_ actionable / commerce…"), one line on scoring ("Scoring 25 guidelines…"), one line on write ("Writing report/AUDIT.md…"). Don't narrate every curl - group by module or by batch. Keep each line under 80 chars.
 
-Probes that POST to live endpoints are safe - they're discovery calls with no side effects: m4-4 `initialize` + `tools/list`, m4-9 `OPTIONS` (and a `{}` POST that only reads back a structured validation error), m4-10 `/ask`, and m5-4's DCR probe (POSTs an intentionally-incomplete body so the server rejects it with a validation error rather than registering a real client). Don't run probes that explicitly require manual confirmation (m5-1, m5-4 sub-check 5); flag them as `(manual)` and surface in the report.
+Probes that POST to live endpoints are safe - they're discovery calls with no side effects: m4-4 `server/discover` + `tools/list` (falling back to `initialize` on servers older than MCP `2026-07-28`), m4-9 `OPTIONS` (and a `{}` POST that only reads back a structured validation error), m4-10 `/ask`, and m5-4's DCR probe (POSTs an intentionally-incomplete body so the server rejects it with a validation error rather than registering a real client). Don't run probes that explicitly require manual confirmation (m5-1, m5-4 sub-check 5); flag them as `(manual)` and surface in the report.
 
 ### 3. Score each guideline
 
