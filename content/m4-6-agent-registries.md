@@ -36,7 +36,7 @@ With the MCP server live ([4.4](./m4-4-mcp-server.md)) and the OpenAPI clean ([4
 - [Model Context Protocol Registry](https://github.com/modelcontextprotocol/registry?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Smithery - publishing servers](https://smithery.ai/docs/build?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [skills.sh - SKILL.md spec](https://skills.sh?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [Agent Skills open standard](https://agentskills.io?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) - the `SKILL.md` format and the `/.well-known/agent-skills/` index
+- [Agent Skills open standard](https://agentskills.io?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Google Agentic Resource Discovery (ARD)](https://agenticresourcediscovery.org/spec)
 - [Glama MCP directory](https://glama.ai/mcp)
 - [ora.ai directory](https://directory.ora.ai)

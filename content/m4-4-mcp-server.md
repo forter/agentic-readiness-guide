@@ -39,8 +39,8 @@ It's also the layer where agent drift has the most consequence - MCP tool calls 
 ## References
 - [Model Context Protocol specification](https://modelcontextprotocol.io/specification?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [MCP `2026-07-28` key changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) - the stateless rewrite, in full
-- [MCP versioning and compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) - `server/discover`, per-request `_meta`, and the dual-era compatibility matrix
+- [MCP `2026-07-28` key changes](https://modelcontextprotocol.io/specification/2026-07-28/changelog?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP versioning and compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP feature lifecycle and deprecation policy](https://modelcontextprotocol.io/community/feature-lifecycle?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP Server Card](https://modelcontextprotocol.io/community/server-card/charter?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP resources](https://modelcontextprotocol.io/docs/concepts/resources?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)

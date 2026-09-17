@@ -31,7 +31,7 @@ Two halves: **(a)** self-serve sandbox and free-tier credentials at signup, issu
 
 ## References
 - [WorkOS auth.md protocol](https://workos.com/auth-md?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [RFC 7591 - Dynamic Client Registration](https://datatracker.ietf.org/doc/html/rfc7591?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (deprecated by MCP `2026-07-28`; fallback only)
+- [RFC 7591 - Dynamic Client Registration](https://datatracker.ietf.org/doc/html/rfc7591?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP client registration - Client ID Metadata Documents](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#client-id-metadata-documents)
 - [Stripe sandbox model](https://docs.stripe.com/keys?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Twilio test credentials](https://www.twilio.com/docs/iam/test-credentials?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)

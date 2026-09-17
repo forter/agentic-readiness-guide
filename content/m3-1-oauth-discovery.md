@@ -36,7 +36,7 @@ Scopes are also your **blast-radius limit** - a leaked or misused token shouldn'
 ## References
 - [RFC 6749 - OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 7636 - PKCE](https://datatracker.ietf.org/doc/html/rfc7636?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [RFC 7591 - Dynamic Client Registration](https://datatracker.ietf.org/doc/html/rfc7591?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (deprecated by MCP `2026-07-28` in favour of CIMD; keep as fallback)
+- [RFC 7591 - Dynamic Client Registration](https://datatracker.ietf.org/doc/html/rfc7591?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP client registration - Client ID Metadata Documents](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#client-id-metadata-documents)
 - [RFC 9207 - OAuth 2.0 Authorization Server Issuer Identification](https://datatracker.ietf.org/doc/html/rfc9207?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 8414 - Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)

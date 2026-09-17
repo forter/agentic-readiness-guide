@@ -34,7 +34,7 @@ Anything an agent waits on for more than five seconds needs progress feedback, o
 - [RFC 7230 §4.1 - Chunked Transfer Coding](https://datatracker.ietf.org/doc/html/rfc7230?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#section-4.1)
 - [JSON Lines specification](https://jsonlines.org?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [MCP Tasks extension](https://modelcontextprotocol.io/extensions/tasks/overview?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (`io.modelcontextprotocol/tasks`)
+- [MCP Tasks extension](https://modelcontextprotocol.io/extensions/tasks/overview?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Standard Webhooks specification](https://www.standardwebhooks.com?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 
 ## How Forter helps

@@ -31,7 +31,7 @@ Worth knowing: the host environment is **shared with components from other tools
 6. **Sandbox aggressively.** CSP-lock every bundle, sign every asset, scope every network call to your origin only, and never accept arbitrary HTML from the tool's response. Assume the host environment is shared with components from other tools.
 
 ## References
-- [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) (`io.modelcontextprotocol/ui`)
+- [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP Apps extension spec (repo)](https://github.com/modelcontextprotocol/ext-apps?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [MCP extension negotiation](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#extension-negotiation)
 - [MCP resources reference](https://modelcontextprotocol.io/docs/concepts/resources?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
