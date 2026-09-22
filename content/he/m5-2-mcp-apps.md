@@ -18,12 +18,12 @@ MCP Apps מאפשר לכלי שלכם לרנדר **רכיב UI אינטראקט�
 כדאי לדעת: סביבת המארח **משותפת עם רכיבים מכלים אחרים**. התייחסו ל-bundle שלכם כמו לכל נכס ציבורי אחר - חתום, נעול-CSP, מתוחם-רשת לדומיין שלכם. הסטנדרטים מוגדרים היטב; הבנייה לא-טריוויאלית מספיק כך שרוב הצוותים משלבים את Forter, שמספקת את שכבת הרכיבים מוכנה-מראש.
 
 ## ניקוד
-- **מאמץ 4/5** - שלוש חזיתות חדשות בבת אחת: הצהרת יכולת MCP Apps על השרת שלכם, חבילות הרכיבים עצמן (תואמות-מארח, נעולות-CSP, חתומות), וחוזה ה-JSON Schema שקושר כלים למשאבי UI. המפרט מתייצב.
+- **מאמץ 4/5** - שלוש חזיתות חדשות בבת אחת: הצהרת יכולת MCP Apps על השרת שלכם, חבילות הרכיבים עצמן (תואמות-מארח, נעולות-CSP, חתומות), וחוזה ה-JSON Schema שקושר כלים למשאבי UI. המפרט כבר התייצב - `2026-07-28` קידם את Apps מתוך `experimental` להרחבה מהמעלה הראשונה, כך שהמטרה הפסיקה לזוז.
 - **השפעה 5/5** - כלים עם UI מוטמע ממירים דרמטית טוב יותר מכלים שמוסרים למשתמש קישור.
 - **שינוי חזותי: ללא** *(באתר שלכם)* - רכיבים מרונדרים בתוך מארח הצ'אט (ChatGPT,‏ Claude). שום דבר באתר שלכם לא משתנה.
 
 ## שלבים
-1. **הפעילו את יכולת ה-Apps על שרת ה-MCP שלכם.** בתגובת ה-`initialize`, פרסמו `capabilities.experimental.apps` (לפי טיוטת modelcontextprotocol-ext-apps). דורש את תשתית שרת ה-MCP מ-[4.4](./m4-4-mcp-server.md) כבר רצה עם Streamable HTTP.
+1. **הפעילו את יכולת ה-Apps על שרת ה-MCP שלכם.** נכון ל-MCP `2026-07-28` זה כבר אינו דגל ניסיוני: Apps היא **הרחבה רשמית**, המוכרזת בתוצאת ה-`server/discover` שלכם בתור `capabilities.extensions["io.modelcontextprotocol/ui"]` עם אובייקט הגדרות שמונה את סוגי ה-MIME שאתם מגישים (`{"mimeTypes": ["text/html;profile=mcp-app"]}`). שרתים שעדיין על `2025-11-25` או מוקדם יותר השתמשו ב-`capabilities.experimental.apps`; אם אתם תומכים בשתי התקופות, פרסמו את שתיהן. מצריך שתשתית שרת ה-MCP מ-[4.4](./m4-4-mcp-server.md) כבר תרוץ עם Streamable HTTP. שימו לב לכלל ההתאמה בצד השני: שרת `2026-07-28` **אסור** שיסתמך על יכולת שהלקוח לא הכריז עליה, ולכן מארח שלא מפרסם `io.modelcontextprotocol/ui` צריך לקבל תוצאות טקסט רגיל, לא רכיב שבור.
 2. **בנו חבילות רכיבים תואמות-מארח.** השתמשו ב-`@modelcontextprotocol/ext-apps` כדי לקמפל רכיבי React/Svelte/Vue לפורמט זמן-הריצה של המארח (מוגש עם סוג ה-MIME של MCP Apps,‏ `text/html;profile=mcp-app`). חבילות חייבות להיות עצמאיות וחתומות כך שהמארח יכול לאמת מקור לפני הרכבה. המארח אוכף CSP בסיסי קפדני (`default-src 'none'`,‏ `object-src 'none'`); הצהירו על כל מקור שאתם באמת צריכים דרך רשימות-ההיתר `_meta.ui.csp` של המפרט (`connectDomains`,‏ `resourceDomains`,‏ `frameDomains`,‏ `baseUriDomains`) במקום להרפות את ה-CSP כולו.
 3. **חשפו משאבי `ui://` עם URI-ים יציבים וממוספרי-גרסה.** כל רכיב חי ב-URI כמו `ui://yourcompany.com/checkout/payment-picker@1.4.0`. מספרו גרסה לכל URI: סוכנים שומרים במטמון באגרסיביות, ושינוי לא-ממוספר משבית שיחות באמצע-טיסה.
 4. **תייגו כלים עם `_meta.ui.resourceUri`.** על כל כלי שאמור לרנדר מוטמע, הגדירו `_meta.ui.resourceUri` ל-URI ה-`ui://` המתאים. מארח הסוכן קורא את המטא-נתון הזה בזמן רשימת-הכלים ומחמם מראש את הרכיב לפני ההפעלה.
@@ -31,9 +31,11 @@ MCP Apps מאפשר לכלי שלכם לרנדר **רכיב UI אינטראקט�
 6. **בודדו ב-sandbox באגרסיביות.** נעלו-CSP כל bundle, חתמו על כל נכס, תחמו כל קריאת רשת לדומיין שלכם בלבד, ולעולם אל תקבלו HTML שרירותי מתגובת הכלי. הניחו שסביבת המארח משותפת עם רכיבים מכלים אחרים.
 
 ## מקורות
-- [MCP Apps extension spec](https://github.com/modelcontextprotocol/ext-apps?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP Apps extension spec (repo)](https://github.com/modelcontextprotocol/ext-apps?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP extension negotiation](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#extension-negotiation)
 - [MCP resources reference](https://modelcontextprotocol.io/docs/concepts/resources?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [MCP `_meta` field reference](https://modelcontextprotocol.io/specification/2025-06-18/basic?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#meta)
+- [MCP `_meta` field reference](https://modelcontextprotocol.io/specification/2026-07-28/basic/index?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#meta)
 - [CSP - Content Security Policy](https://www.w3.org/TR/CSP3/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 
 ## כיצד Forter יכולה לעזור

@@ -22,7 +22,26 @@ forterApplies: 'partial'
 
 ## 手順
 1. **まず正式コピーを確定する。** 名前と説明であふれた4つのマニフェストを書く前に、それらを一度だけ決めてください。短い製品名1つ（40文字以下）、モデル向けの説明1つ（120文字以下）、人間向けの段落1つ（400文字以下）です。これらを、リポジトリ内の唯一の信頼できる情報源 (single source of truth) となるファイル（例: `brand-copy.md`）にコミットしてください。ここから先、本ガイドが求めるすべての名前・説明フィールド - これらのマニフェスト、JSON-LD（[2.1](./m2-1-json-ld.md)）、`llms.txt`（[2.2](./m2-2-llms-txt-content.md)）、MCP ツール一覧（[4.4](./m4-4-mcp-server.md)）、meta タグや OG タグ - は、**このファイルからコピーするのであって、二度と即興で書き直さないでください**。この一つの規律こそ、[5.3](./m5-3-cross-platform-consistency.md) を書き直しではなく5分の検証作業に変えるものです。
-2. **`/.well-known/ai-plugin.json`** - OpenAI のプラグインマニフェスト、`application/json` として提供します。
+2. **`/.well-known/ai-catalog.json`（Google ARD）。** Google の [Agentic Resource Discovery](https://agenticresourcediscovery.org/spec)（ARD）は、2026年6月17日に Microsoft、GitHub、Hugging Face、Nvidia、Salesforce、Linux Foundation の支持を得て公開され、あなたの MCP サーバー、A2A エージェント、API、スキルを指し示す単一のインデックスを定義します。ARD レジストリはこれらのカタログをクロールし、自然言語による能力クエリに回答します。`/.well-known/ai-catalog.json` で公開してください。
+   ```json
+   {
+     "version": "1.0",
+     "name": "Acme Returns",
+     "description": "Check order status and start a return for any Acme order.",
+     "capabilities": [
+       { "type": "mcp", "url": "https://mcp.example.com", "description": "MCP server for order tools" },
+       { "type": "a2a", "url": "https://example.com/.well-known/agent-card.json", "description": "A2A agent card" },
+       { "type": "api", "url": "https://example.com/openapi.json", "description": "OpenAPI spec" }
+     ],
+     "representativeQueries": [
+       "check order status for Acme",
+       "start a return on an Acme order",
+       "what does Acme Returns cost?"
+     ]
+   }
+   ```
+   `representativeQueries` フィールドは、いわばエージェンティックウェブ向けのキーワードリサーチです - エージェントがあなたを見つけるために使いそうな、タスク志向のフレーズを2～5個並べます。注意: これを [4.1](./m4-1-openapi-spec.md) の RFC 9727 の `api-catalog` と混同しないでください。それは別のパスにある別のアーティファクトです。
+3. **`/.well-known/ai-plugin.json`** - OpenAI のプラグインマニフェスト、`application/json` として提供します。
    ```json
    {
      "schema_version": "v1",
@@ -38,7 +57,9 @@ forterApplies: 'partial'
    }
    ```
    上記のキー名はそのまま必須です。値はプレースホルダーなので - あなたの正式コピーと実際の URL に置き換えてください。`auth` は [3.1](./m3-1-oauth-discovery.md) の OAuth エンドポイントを、`api.url` は [4.1](./m4-1-openapi-spec.md) の `/openapi.json` を指します - いずれも後のモジュールで提供されるエンドポイントです。それらのパスはすでに決まっているので、**最終的な URL を今書いてください**。ファイルは保存した瞬間に正しく、それらのガイドラインが着地するにつれて単に解決され始めます。プレースホルダーも、二度目の訪問も不要です。
-3. **`/.well-known/agent.json`** - Claude 連携やいくつかの小規模レジストリで使われる汎用エージェントマニフェスト。ai-plugin の形を踏襲します。
+
+   **陳腐化に関する注記（2026年7月）:** ChatGPT の Apps は、Apps SDK を介して MCP ベースのモデルへ移行しました。次回の改訂の前に、OpenAI の最新ドキュメントに照らして、新規申請において `ai-plugin.json` がまだ何らかのゲートとして機能するのか、それとも MCP サーバーカード（[4.4](./m4-4-mcp-server.md)）が申請サーフェスとしてそれに取って代わったのかを確認してください。後方互換性のためにファイルは生かしておきますが、まだ読まれていることを確認せずに、新しい申請ワークフローをこのファイルを中心に構築しないでください。
+4. **`/.well-known/agent.json`** - Claude 連携やいくつかの小規模レジストリで使われる汎用エージェントマニフェスト。ai-plugin の形を踏襲します。
    ```json
    {
      "name": "Acme Returns",
@@ -50,7 +71,7 @@ forterApplies: 'partial'
    }
    ```
    `description` はツールピッカーに表示される文言です - これはあなたの正式コピーからそのまま来ます。
-4. **`/.well-known/agent-card.json`** - Google の A2A（Agent-to-Agent）プロトコルカード。`skills` 配列が実質的な中身です。エージェントがあなたに委ねられるタスク1つにつき1エントリで、それぞれに例文 (example utterances) を添え、呼び出し側のエージェントがいつあなたにルーティングすべきかを判断できるようにします。
+5. **`/.well-known/agent-card.json`** - Google の A2A（Agent-to-Agent）プロトコルカード。`skills` 配列が実質的な中身です。エージェントがあなたに委ねられるタスク1つにつき1エントリで、それぞれに例文 (example utterances) を添え、呼び出し側のエージェントがいつあなたにルーティングすべきかを判断できるようにします。
    ```json
    {
      "name": "Acme Returns",
@@ -71,7 +92,7 @@ forterApplies: 'partial'
      ]
    }
    ```
-5. **MCP ディスカバリー。** `/.well-known/mcp.json` を公開するか、`/.well-known/mcp` からそのファイルへの `307` リダイレクトを設定します。
+6. **MCP ディスカバリー。** `/.well-known/mcp.json` を公開するか、`/.well-known/mcp` からそのファイルへの `307` リダイレクトを設定します。
    ```json
    {
      "mcpServers": [
@@ -84,12 +105,15 @@ forterApplies: 'partial'
    }
    ```
    MCP サーバーの正式 URL を今決めてください。[4.4](./m4-4-mcp-server.md) が後でエンドポイントをオンラインにしますが、ディスカバリーファイルは書いた瞬間に正しく、4.4 が着地したときに解決され始めます。プレースホルダーは不要です。
-6. **`curl` で検証する。** 4つの well-known ファイルはすべて、今日の時点で `200`、`Content-Type: application/json` を返し、問題なくパースできなければなりません - これらは今提供する静的ファイルです。それらが *指す* エンドポイント（OpenAPI、OAuth、MCP）は、モジュール3と4が着地するにつれて後で解決されます。CMS のデプロイがそれらをひそかに壊さないよう、4つのファイルを CI のスモークテストに追加してください。
+7. **`curl` で検証する。** 5つの well-known ファイルはすべて、今日の時点で `200`、`Content-Type: application/json` を返し、問題なくパースできなければなりません - これらは今提供する静的ファイルです。それらが *指す* エンドポイント（OpenAPI、OAuth、MCP）は、モジュール3と4が着地するにつれて後で解決されます。CMS のデプロイがそれらをひそかに壊さないよう、5つのファイルを CI のスモークテストに追加してください。
+
+> `.well-known/*` ファイルに到達するエージェントのタスク実行は、今日ではまだ意味のある少数派にとどまりますが、エージェントが実際に到達したときの価値は高いです。これがインパクト3の評価を裏付けています。ARD レジストリが稼働し `ai-catalog.json` のクロールを始めるにつれ、到達率は上昇すると見込まれます。
 
 ## 参考資料
 - [OpenAI Plugin Manifest](https://openai.com/index/chatgpt-plugins/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [A2A (Agent2Agent) Agent Card 仕様](https://a2a-protocol.org/latest/specification/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)（[リポジトリ](https://github.com/a2aproject/A2A?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)）
 - [Model Context Protocol - discovery](https://modelcontextprotocol.io/specification?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [Google Agentic Resource Discovery (ARD)](https://agenticresourcediscovery.org/spec)
 
 ## Forter による支援
 

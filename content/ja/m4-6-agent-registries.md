@@ -13,7 +13,7 @@ forterApplies: 'yes'
 # 4.6  エージェントレジストリに登録する
 
 ## 概要と理由
-MCP サーバーが稼働し（[4.4](./m4-4-mcp-server.md)）、OpenAPI がきれいになった（[4.1](./m4-1-openapi-spec.md)）いま、ようやく公開するものができました。エージェントは、クロールではなく **レジストリ** を通じて機能を発見します - そして重要なのは4つです。**mcp.run、mcphub.io、Smithery**（MCP サーバーのマーケットプレイス）と **skills.sh**（Claude と Cursor で一級のインデックスを持つ、ドメインレベルのスキルカタログ）です。登録は無料で、フォームは短く、規律は、ツールサーフェスが進化しても説明を正確に保つことです。
+MCP サーバーが稼働し（[4.4](./m4-4-mcp-server.md)）、OpenAPI がきれいになった（[4.1](./m4-1-openapi-spec.md)）いま、ようやく公開するものができました。エージェントは、クロールではなく **レジストリ** を通じて機能を発見します - そして今日、いくつかが重要です。**mcp.run、mcphub.io、Smithery、Glama**（MCP サーバーのマーケットプレイス）、**skills.sh**（Claude と Cursor で一級のインデックスを持つ、ドメインレベルのスキルカタログ）、**Agent Skills**（オープンな `SKILL.md` 標準。自分の `/.well-known/` から自己公開することもできます）、公式の **MCP Registry**、**ARD レジストリ**（Google 系、`ai-catalog.json` をクロール）、そして **スコアベースのディレクトリ**（ランキングをエージェントがリアルタイムでクエリする可能性がある）です。登録は無料で、フォームは短く、規律は、ツールサーフェスが進化しても説明を正確に保つことです。
 
 ## スコアリング
 - **工数 1/5** - 4つの登録、それぞれ約15分。登録の質は、背後の仕様の質で頭打ちになるので、作業のほとんどは [4.1](./m4-1-openapi-spec.md) と 4.4 で済んでいます。
@@ -25,12 +25,21 @@ MCP サーバーが稼働し（[4.4](./m4-4-mcp-server.md)）、OpenAPI がき�
 2. **Smithery。** 最大の MCP マーケットプレイス。リポジトリのルートに `smithery.yaml` を追加し、ランタイム、環境変数、起動コマンドを宣言します - これが、Cursor と Windsurf でのワンクリックインストールを可能にします。
 3. **skills.sh - ドメインを登録する。** skills.sh であなたのドメインを取得し、公開リポジトリごとにトップレベルの `SKILL.md` を公開して、呼び出し可能なすべてのスキルを `name`、`description`、`inputs`、`outputs`、そして `example` ブロックとともに列挙します。形式はフロントマター付きの Markdown です - よく知られたリポジトリ（例: `stripe/stripe.com/SKILL.md`）から借りてください。
 4. **skills.sh - 品質シグナル。** レジストリは3つのシグナルで登録をランク付けします: (a) 同じドメイン配下の **複数のリポジトリ**、それぞれが独自の `SKILL.md` を持つ。(b) 明確さについて **LLM のルーブリックを通過する説明**（「強力で使いやすいプラットフォーム」のような埋め草はなし）。そして (c) **鮮度** - `SKILL.md` が90日以内に更新されている。薄い `SKILL.md` を1つ持つサイトは、焦点の絞られた5つを持つサイトより下位にランクされます。
-5. **検証と監視。** 各登録の後、ブランド名と代表的なユースケースのクエリでレジストリを検索します。30日のリマインダーを設定して再検証してください - レジストリは定期的に再クロールし、5xx を返す、または形が変わったサーバーを黙ってリスト解除します。（消費者向け AI プラットフォーム - GPT Store、Custom GPTs、Claude 連携、Gemini extensions - は、独自のレビューサイクルを持つ 5.1 のジョブです。）
+5. **Agent Skills インデックスを `/.well-known/agent-skills/index.json` に公開する。** `SKILL.md` はもはや skills.sh の掲載慣習にとどまりません - **Agent Skills** はオープン標準（2025年12月公開、[agentskills.io](https://agentskills.io) で管理）であり、Claude Code、Cursor、GitHub Copilot、VS Code、OpenAI Codex、Gemini CLI を含む40以上のエージェントクライアントに採用されています。フォーマットは意図的に極小です。フォルダ1つ、必須のフロントマターフィールドが2つ（`name`、`description`）の `SKILL.md`、そして任意のスクリプト、リファレンス、アセット。公開する価値を生むのは **段階的開示（progressive disclosure）** のモデルです - エージェントの起動時に読み込まれるのは `name` と `description` だけ（それぞれ約30〜50トークン）、本文はスキルが起動されたときに、リファレンスファイルは実行に必要なときにだけ読み込まれます。だからこそスキルはエージェントのコンテキストをほとんど消費せず、だからこそ深さより幅が勝ちます - 焦点の絞られた5つのスキルは、散漫な1つを上回ります。
+   静的な `index.json`（v0.2.0）を `/.well-known/agent-skills/` で提供し、各スキルを `name`、`description`、その `SKILL.md` への `path` とともに列挙してください。そうすれば、エージェントはサードパーティのレジストリを一切経由せず、あなたのドメインだけからあなたにできることを列挙できます。同じ可搬性が持つセキュリティ上の側面にも注意してください。1つのスキルフォルダがすべての主要エージェントで動くということは、悪意ある、あるいは不注意なスキルもそうだということです。公開したスキルは公開された攻撃面として扱ってください - コードと同じようにレビューし、実行するものはすべてピン留めし、リモートのコンテンツを取得して実行するようエージェントに指示するスキルは絶対に作らないでください。
+6. **ARD レジストリに公開する。** [1.2](./m1-2-well-known-agent-files.md) で `/.well-known/ai-catalog.json` を公開していれば、ARD レジストリがそれをクロールし、自然言語クエリを通じてあなたの機能を発見可能にします。これらのレジストリがオンラインになるにつれ、それらにクロールされることが次のレジストリの一手です。`ai-catalog.json` が有効であること、そして `representativeQueries` が適切に選ばれていることを確認してください。
+7. **スコアベースのディレクトリに登録し、スコアを監視する。** [directory.ora.ai](https://directory.ora.ai) は無料の登録先の1つです。スコアベースのディレクトリは、エージェントがベンダーを選ぶ際にランキングをリアルタイムでクエリすると主張しています - それが実際のルーティング量になるかどうかにかかわらず、無料の登録とスコア監視は15分の作業です。[journey.ora.ai](https://journey.ora.ai) を使って、実際のエージェントがあなたのライブサイトに対してインテントを実行する様子を見てください。
+8. **公式 MCP Registry に登録する。** [MCP Registry](https://github.com/modelcontextprotocol/registry) は、プロトコルレベルのサーバーディレクトリです。Glama（19,831 以上のサーバー）と並んで、エージェントランタイムの主要な発見サーフェスになりつつあります。
+9. **検証と監視。** 各登録の後、ブランド名と代表的なユースケースのクエリでレジストリを検索します。30日のリマインダーを設定して再検証してください - レジストリは定期的に再クロールし、5xx を返す、または形が変わったサーバーを黙ってリスト解除します。（消費者向け AI プラットフォーム - GPT Store、Custom GPTs、Claude 連携、Gemini extensions - は、独自のレビューサイクルを持つ 5.1 のジョブです。）
 
 ## 参考資料
 - [Model Context Protocol Registry](https://github.com/modelcontextprotocol/registry?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Smithery - publishing servers](https://smithery.ai/docs/build?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [skills.sh - SKILL.md 仕様](https://skills.sh?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [Agent Skills オープン標準](https://agentskills.io?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [Google Agentic Resource Discovery (ARD)](https://agenticresourcediscovery.org/spec)
+- [Glama MCP directory](https://glama.ai/mcp)
+- [ora.ai directory](https://directory.ora.ai)
 
 ## Forter による支援
 

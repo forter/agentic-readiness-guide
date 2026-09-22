@@ -28,7 +28,9 @@ OpenAPI 3.x は、下流のすべてのエージェント成果物がコンパ�
 3. **エラーを含め、すべてのレスポンスに型を付ける。** `type`、`message`、`request_id`、`retry_hint`（[4.2](./m4-2-rate-limits-and-errors.md) を参照）を持つ共有の `Error` スキーマを定義し、すべての `4xx` / `5xx` レスポンスからそれを参照します。`additionalProperties` の抜け道はなし。エージェントは、宣言されていないものを推論できません。
 4. **ページネーションを明示的に指定する。** 1つのモデルを選び - カーソルベースが最も親切です - すべてのリストエンドポイントで `cursor`、`limit`、そしてレスポンスのエンベロープ（`data[]`、`next_cursor`、`has_more`）を文書化します。
 5. **RFC 9727 API カタログを公開する。** `/.well-known/api-catalog` に。あなたの OpenAPI ファイル、バージョニングポリシー、サンドボックス URL、連絡先メタデータをリンクする JSON ドキュメントです。
-6. **エージェントに優しいビューをネゴシエートする。** エージェントが `Accept: text/markdown` を送ってきたら、生の JSON ではなく、リソースの Markdown レンダリング（タイトル、主要フィールド、リンク）を返し、`Vary: Accept` を設定してキャッシュが JSON と Markdown のバリアントを混ぜないようにします。リクエストヘッダーを設定できないエージェントやクローラーのために、`?mode=agent` クエリパラメータを尊重して、任意のページやリソースの、同じく削ぎ落とした Markdown スタイルのビューを返します。JSON クライアントとブラウザには変化が見えません。
+6. **（オプション）GraphQL スキーマを公開する。** REST と併用して、あるいは REST の代わりに GraphQL API を運用しているなら、`/graphql` のスキーマエンドポイントまたはイントロスペクションクエリで SDL を公開します。GraphQL エンドポイントを OpenAPI と並べて、あなたの `/.well-known/api-catalog` と `llms.txt` に文書化します。GraphQL を運用していない場合、この手順は該当なし（N/A）です。
+7. **エージェントに優しいビューをネゴシエートする。** エージェントが `Accept: text/markdown` を送ってきたら、生の JSON ではなく、リソースの Markdown レンダリング（タイトル、主要フィールド、リンク）を返し、`Vary: Accept` を設定してキャッシュが JSON と Markdown のバリアントを混ぜないようにします。リクエストヘッダーを設定できないエージェントやクローラーのために、`?mode=agent` クエリパラメータを尊重して、任意のページやリソースの、同じく削ぎ落とした Markdown スタイルのビューを返します。JSON クライアントとブラウザには変化が見えません。
+8. **`/api` に何かを提供する。** エージェントは頻繁にパス `/api` を推測しますが、ほとんどの場合 404 に行き当たります。`/api` から `/docs/api` または `/.well-known/api-catalog` への `302` リダイレクトだけでも、ほぼゼロコストで行き止まりを解消できます。
 
 ## 参考資料
 - [OpenAPI Specification 3.1](https://spec.openapis.org/oas/v3.1.0?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)

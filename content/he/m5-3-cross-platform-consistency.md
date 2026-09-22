@@ -30,7 +30,7 @@ forterApplies: 'partial'
 
 ## מקורות
 - [Open Graph protocol](https://ogp.me/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [MCP server initialization spec](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#initialization)
+- [MCP versioning and compatibility](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Apps in ChatGPT](https://help.openai.com/en/articles/11487775-apps-in-chatgpt?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 
 ## כיצד Forter יכולה לעזור
