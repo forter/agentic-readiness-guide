@@ -9,6 +9,7 @@
  *   4. Every audit/m{M}-{N}.md parses with valid rubric frontmatter.
  *   5. Each audit rubric matches its content guideline on id, complexity, impact, visualChange.
  *   6. Cross-references of the form (./mX-Y-*.md) resolve to existing files.
+ *   7. No em/en dashes in any authored markdown - this guide uses plain hyphens.
  *
  * Exits 1 on any failure; 0 on success.
  */
@@ -65,6 +66,17 @@ const ok = (msg) => console.log("✓ " + msg);
 
 function listMd(dir) {
   return readdirSync(dir).filter((f) => f.endsWith(".md")).sort().map((f) => join(dir, f));
+}
+
+/** Every .md under `dir`, including locale subdirectories (content/ja, …). */
+function listMdDeep(dir) {
+  const out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...listMdDeep(path));
+    else if (entry.name.endsWith(".md")) out.push(path);
+  }
+  return out;
 }
 
 function hasSection(body, label) {
@@ -250,6 +262,32 @@ for (const path of [...contentFiles, ...auditFiles]) {
 }
 
 ok("Cross-references resolved");
+
+// 7: typography - the guide is written with plain hyphens, never em/en dashes
+// (figure dash, en dash, em dash, horizontal bar). Covers every locale under
+// content/, the audit rubrics, the report, and the root docs.
+const DASH_RE = /[‒–—―]/;
+const proseFiles = [
+  ...listMdDeep(CONTENT),
+  ...listMdDeep(AUDIT),
+  ...(existsSync(join(REPO, "report")) ? listMdDeep(join(REPO, "report")) : []),
+  ...["CHANGELOG.md", "README.md", "CONTRIBUTING.md", "SKILL.md"]
+    .map((f) => join(REPO, f))
+    .filter((p) => existsSync(p)),
+];
+let dashFiles = 0;
+for (const path of proseFiles) {
+  const rel = path.replace(REPO + "/", "");
+  const lines = readFileSync(path, "utf8").split("\n");
+  let hit = false;
+  lines.forEach((line, i) => {
+    if (!DASH_RE.test(line)) return;
+    hit = true;
+    fail(`${rel}:${i + 1}: em/en dash - use a plain hyphen`);
+  });
+  if (hit) dashFiles++;
+}
+if (dashFiles === 0) ok(`No em/en dashes (${proseFiles.length} markdown files)`);
 
 console.log("");
 if (errors > 0) {

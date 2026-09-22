@@ -29,13 +29,16 @@ OAuth 2.0 は、誰も設定ファイルにキーを貼り付けることなく�
 2. **API リソースに対応するスコープを、狭く設計する。** 汎用的な `read` / `write` より、`orders:read`、`payments:write` を優先します。エージェントには最小権限が付与され、監査証跡はよりクリーンになり、漏洩したトークンの被害範囲は実際に認可された範囲に限定されます。
 3. **認可サーバーのメタデータを公開する。** `/.well-known/oauth-authorization-server`（RFC 8414）に: `issuer`、`authorization_endpoint`、`token_endpoint`、`jwks_uri`、サポートするレスポンスタイプとグラントタイプ。
 4. **保護リソースのメタデータを公開する。** `/.well-known/oauth-protected-resource`（RFC 9728）に: `resource`、`authorization_servers`、`scopes_supported`、`bearer_methods_supported`。これにより、エージェントは 401 → `WWW-Authenticate` の往復を省き、認証を一度に解決できます。ここはまた、`auth.md` の `agent_auth` ディスカバリーフックが存在する場所でもあります - [3.3](./m3-3-self-serve-credentials.md) を参照。
-5. **クライアントクレデンシャルをセルフサービスで発行する。** RFC 7591 動的クライアント登録が標準的な形です - 完全なプログラム発行フローは [3.3](./m3-3-self-serve-credentials.md) を参照。
-6. **すべてのトークンイベントを監査ログに記録する。** 発行、リフレッシュ、失効、スコープ不一致による拒否 - `client_id` と `sub` でインデックス付けします。これは、後でセッションの調査が必要になったときの、あなたのフォレンジックの基本要素です。
+5. **クライアントクレデンシャルをセルフサービスで発行する - DCR より Client ID Metadata Documents を優先する。** これは2026年に反転しました。MCP `2026-07-28` は、登録メカニズムとしての **RFC 7591 動的クライアント登録を非推奨** とし、**Client ID Metadata Documents（CIMD）** を推しています。CIMD では、クライアントの `client_id` *そのもの* が、自身のメタデータドキュメントに解決される HTTPS URL です - 登録の呼び出しも、あなたが保管するクライアントごとのシークレットもありません。CIMD を主経路としてサポートし、DCR はまだ CIMD を話せない認可サーバー向けのフォールバックとしてのみ残してください。完全なプログラム発行フローは [3.3](./m3-3-self-serve-credentials.md) を参照。
+6. **認可のやり取りを堅牢にする。** 同じリビジョンで3つの締め付けが導入されました。いずれも安価で、MCP に一切触れないとしてもやる価値があります。認可レスポンスに `iss` パラメータを含め（RFC 9207）、認可コードを引き換える前に、存在する `iss` を記録済みの issuer と照合して検証してください - これは複数の認可サーバーをまたぐ mix-up 攻撃への対策です。クライアントクレデンシャルは **issuer に束縛されたもの** として扱ってください。issuer 識別子でキー付けし、別の認可サーバーに対して再利用せず、認可サーバーが変わったら再登録を強制します。また DCR を受け付けるなら、OpenID Connect のリダイレクト URI の衝突が静かに穴を開けないよう、クライアントに適切な `application_type` の送信を要求してください。
+7. **すべてのトークンイベントを監査ログに記録する。** 発行、リフレッシュ、失効、スコープ不一致による拒否 - `client_id` と `sub` でインデックス付けします。これは、後でセッションの調査が必要になったときの、あなたのフォレンジックの基本要素です。
 
 ## 参考資料
 - [RFC 6749 - OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 7636 - PKCE](https://datatracker.ietf.org/doc/html/rfc7636?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 7591 - Dynamic Client Registration](https://datatracker.ietf.org/doc/html/rfc7591?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP クライアント登録 - Client ID Metadata Documents](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#client-id-metadata-documents)
+- [RFC 9207 - OAuth 2.0 Authorization Server Issuer Identification](https://datatracker.ietf.org/doc/html/rfc9207?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 8414 - Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 9728 - Protected Resource Metadata](https://datatracker.ietf.org/doc/html/rfc9728?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)

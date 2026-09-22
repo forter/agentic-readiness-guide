@@ -23,7 +23,7 @@ forterApplies: 'yes'
 - **視覚的変化: 小** - 掲載は第三者プラットフォームに現れます。サイト上の任意の「利用可能」バッジは、あなた次第です。
 
 ## 手順
-1. **`/.well-known/ai-plugin.json` が最新であることを確認する**（ファイル自体は [1.2](./m1-2-well-known-agent-files.md) で提供されます）。登録には、[4.1](./m4-1-openapi-spec.md) のライブの OpenAPI と [3.1](./m3-1-oauth-discovery.md) の OAuth メタデータを指し、安定した `name_for_model` と `description_for_model` を持たなければなりません。登録前に、OpenAI のプラグインスキーマに対して検証してください。
+1. **提出先が最新であることを確認する。** ChatGPT の Apps は、Apps SDK を通じて MCP ベースのモデルへ移行しました。提出の前に、[OpenAI の最新の Apps ドキュメント](https://help.openai.com/en/articles/11487775-apps-in-chatgpt)に照らして、`/.well-known/ai-plugin.json` が今も新規提出の関門なのか、それとも MCP の server card（[4.4](./m4-4-mcp-server.md)）が主要な提出経路になったのかを確認してください。後方互換のために `ai-plugin.json` は生かしたままにし（ファイル自体は [1.2](./m1-2-well-known-agent-files.md) で提供されます）、[4.1](./m4-1-openapi-spec.md) のライブの OpenAPI と [3.1](./m3-1-oauth-discovery.md) の OAuth メタデータを今も指していることを確認してください。
 2. **ChatGPT GPT Store に登録する。** マニフェスト URL、プライバシーポリシー URL、法的情報 URL、連絡先メール、そしてツールの使用中のスクリーンショット3〜5枚を提供します。初回レビューは2〜4週間を見込んでください。検証済みのプラグインが、ユーザーがあなたの認証ハンドシェイクを再実装せずに、あなたのサービスの上に **Custom GPTs** を作れるようにするものです。
 3. **Claude 連携に登録する。** あなたの MCP サーバーの `/mcp` エンドポイント（[4.4](./m4-4-mcp-server.md)）と、対応する `oauth-protected-resource` メタデータを指します。Anthropic は、MCP ハンドシェイク、スコープのセマンティクス、ツールの説明を検証します。
 4. **Gemini extensions に登録する。** Google のレビューは、OpenAPI のクリーンさ、OAuth スコープの最小化、同意画面の文言に焦点を当てます。GPT Store に登録するのと同じ OpenAPI が、たいてい修正なしで通ります。

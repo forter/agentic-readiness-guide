@@ -17,7 +17,7 @@ Four small, static text files at your origin's root tell the entire AI ecosystem
 
 ## Scoring
 - **Effort 1/5** - One half-day pass, mostly text files. The hardest part is getting your CMS to emit `<lastmod>` correctly.
-- **Impact 4/5** - Foundational for crawler-driven discovery: Modules 2-5 don't get evaluated by anything that can't first find you. Note that robots.txt and sitemap.xml are essential for crawl indexing but are rarely the first thing a live agent fetches — docs and the homepage get far more direct agent traffic. The Impact 4 rating reflects that crawl-indexing importance more than real-time agent browsing.
+- **Impact 4/5** - Foundational for crawler-driven discovery: Modules 2-5 don't get evaluated by anything that can't first find you. Note that robots.txt and sitemap.xml are essential for crawl indexing but are rarely the first thing a live agent fetches - docs and the homepage get far more direct agent traffic. The Impact 4 rating reflects that crawl-indexing importance more than real-time agent browsing.
 - **Visual change: none** - new files at machine-only paths (`/robots.txt`, `/llms.txt`, `/index.md`); your rendered pages don't change.
 
 ## Steps

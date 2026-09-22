@@ -22,7 +22,26 @@ forterApplies: 'partial'
 
 ## שלבים
 1. **קבעו תחילה את הניסוח הקנוני שלכם.** לפני שאתם כותבים ארבעה מניפסטים מלאי שמות ותיאורים, החליטו עליהם פעם אחת: שם מוצר קצר אחד (עד 40 תווים), תיאור אחד פונה למודל (עד 120 תווים), פסקה אחת פונה לאדם (עד 400 תווים). העבירו אותם לקובץ מקור-אמת יחיד במאגר שלכם (למשל, `brand-copy.md`). כל שדה שם ותיאור שהמדריך הזה מבקש מכאן והלאה - במניפסטים הללו, ב-JSON-LD‏ ([2.1](./m2-1-json-ld.md)), ב-`llms.txt`‏ ([2.2](./m2-2-llms-txt-content.md)), ברשימות כלי MCP‏ ([4.4](./m4-4-mcp-server.md)), בתגי meta ו-OG - **מועתק מהקובץ הזה, ולעולם לא מאולתר מחדש**. המשמעת היחידה הזו היא מה שהופך את [5.3](./m5-3-cross-platform-consistency.md) לאימות של חמש דקות במקום לכתיבה מחדש.
-2. **`/.well-known/ai-plugin.json`** - מניפסט ה-plugin של OpenAI, מוגש כ-`application/json`:
+2. **`/.well-known/ai-catalog.json` (Google ARD).** ה-[Agentic Resource Discovery](https://agenticresourcediscovery.org/spec) (ARD) של Google, שהושק ב-17 ביוני 2026 בגיבוי Microsoft,‏ GitHub,‏ Hugging Face,‏ Nvidia,‏ Salesforce ו-Linux Foundation, מגדיר אינדקס יחיד שמצביע על שרתי ה-MCP, סוכני ה-A2A, ממשקי ה-API והמיומנויות שלכם. מרשמי ARD סורקים את הקטלוגים הללו ועונים על שאילתות יכולת בשפה טבעית. פרסמו אותו ב-`/.well-known/ai-catalog.json`:
+   ```json
+   {
+     "version": "1.0",
+     "name": "Acme Returns",
+     "description": "Check order status and start a return for any Acme order.",
+     "capabilities": [
+       { "type": "mcp", "url": "https://mcp.example.com", "description": "MCP server for order tools" },
+       { "type": "a2a", "url": "https://example.com/.well-known/agent-card.json", "description": "A2A agent card" },
+       { "type": "api", "url": "https://example.com/openapi.json", "description": "OpenAPI spec" }
+     ],
+     "representativeQueries": [
+       "check order status for Acme",
+       "start a return on an Acme order",
+       "what does Acme Returns cost?"
+     ]
+   }
+   ```
+   שדה ה-`representativeQueries` הוא למעשה מחקר מילות מפתח עבור הרשת הסוכנית - 2-5 ביטויים מוכווני-משימה שסוכן עשוי להשתמש בהם כדי למצוא אתכם. שימו לב: אל תבלבלו בין זה לבין ה-`api-catalog` של RFC 9727 מ-[4.1](./m4-1-openapi-spec.md), שהוא ארטיפקט שונה בנתיב שונה.
+3. **`/.well-known/ai-plugin.json`** - מניפסט ה-plugin של OpenAI, מוגש כ-`application/json`:
    ```json
    {
      "schema_version": "v1",
@@ -38,7 +57,9 @@ forterApplies: 'partial'
    }
    ```
    שמות המפתחות לעיל מילוליים והכרחיים; הערכים הם מצייני מקום - החליפו אותם בניסוח הקנוני שלכם ובכתובות URL אמיתיות. `auth` מצביע על נקודות הקצה של OAuth מ-[3.1](./m3-1-oauth-discovery.md), ו-`api.url` על `/openapi.json` מ-[4.1](./m4-1-openapi-spec.md) - נקודות קצה שעולות לאוויר במודולים מאוחרים יותר. הנתיבים שלהן כבר הוחלטו, אז כתבו את ה**כתובות הסופיות עכשיו**: הקובץ נכון ברגע שאתם שומרים אותו, ופשוט מתחיל להיפתר כשההנחיות הללו נוחתות. ללא ציין מקום, ללא ביקור שני.
-3. **`/.well-known/agent.json`** - מניפסט סוכן גנרי שבו משתמשות אינטגרציות של Claude וכמה מרשמים קטנים יותר. הוא משקף את מבנה ai-plugin:
+
+   **הערת התיישנות (יולי 2026):** אפליקציות ב-ChatGPT עברו למודל מבוסס-MCP דרך ה-Apps SDK. לפני הגרסה הבאה שלכם, ודאו מול התיעוד העדכני של OpenAI האם `ai-plugin.json` עדיין משמש כשער עבור הגשות חדשות, או שכרטיס שרת ה-MCP ([4.4](./m4-4-mcp-server.md)) החליף אותו כערוץ ההגשה. השאירו את הקובץ פעיל לצורך תאימות לאחור, אך אל תבנו זרימות הגשה חדשות סביבו מבלי לוודא שהוא עדיין נקרא.
+4. **`/.well-known/agent.json`** - מניפסט סוכן גנרי שבו משתמשות אינטגרציות של Claude וכמה מרשמים קטנים יותר. הוא משקף את מבנה ai-plugin:
    ```json
    {
      "name": "Acme Returns",
@@ -50,7 +71,7 @@ forterApplies: 'partial'
    }
    ```
    `description` הוא מה שמופיע בבוררי הכלים - הוא בא ישירות מהניסוח הקנוני שלכם.
-4. **`/.well-known/agent-card.json`** - כרטיס פרוטוקול ה-A2A‏ (Agent-to-Agent) של Google. מערך ה-`skills` הוא החלק המהותי: ערך אחד לכל משימה שסוכן יכול למסור לכם, כל אחד עם משפטי דוגמה כך שסוכן קורא יודע מתי לנתב אליכם.
+5. **`/.well-known/agent-card.json`** - כרטיס פרוטוקול ה-A2A‏ (Agent-to-Agent) של Google. מערך ה-`skills` הוא החלק המהותי: ערך אחד לכל משימה שסוכן יכול למסור לכם, כל אחד עם משפטי דוגמה כך שסוכן קורא יודע מתי לנתב אליכם.
    ```json
    {
      "name": "Acme Returns",
@@ -71,7 +92,7 @@ forterApplies: 'partial'
      ]
    }
    ```
-5. **גילוי MCP.** פרסמו `/.well-known/mcp.json`, או הפניית `307` מ-`/.well-known/mcp` לאותו קובץ:
+6. **גילוי MCP.** פרסמו `/.well-known/mcp.json`, או הפניית `307` מ-`/.well-known/mcp` לאותו קובץ:
    ```json
    {
      "mcpServers": [
@@ -84,12 +105,15 @@ forterApplies: 'partial'
    }
    ```
    החליטו על כתובת ה-URL הקנונית של שרת ה-MCP שלכם עכשיו; [4.4](./m4-4-mcp-server.md) מעלה את נקודת הקצה לאוויר מאוחר יותר, אך קובץ הגילוי נכון ברגע שאתם כותבים אותו ומתחיל להיפתר כש-4.4 נוחתת. ללא ציין מקום.
-6. **ודאו עם `curl`.** כל ארבעת קובצי ה-well-known חייבים להחזיר `200`,‏ `Content-Type: application/json`, ולהתפרש נקי כבר היום - הם קבצים סטטיים שאתם מגישים עכשיו. נקודות הקצה שאליהן הם *מצביעים* (OpenAPI,‏ OAuth,‏ MCP) נפתרות מאוחר יותר כשמודולים 3 ו-4 נוחתים. הוסיפו את ארבעת הקבצים לבדיקות smoke ב-CI כך שפריסת CMS לא תוכל לשבור אותם בשקט.
+7. **ודאו עם `curl`.** כל חמשת קובצי ה-well-known חייבים להחזיר `200`,‏ `Content-Type: application/json`, ולהתפרש נקי כבר היום - הם קבצים סטטיים שאתם מגישים עכשיו. נקודות הקצה שאליהן הם *מצביעים* (OpenAPI,‏ OAuth,‏ MCP) נפתרות מאוחר יותר כשמודולים 3 ו-4 נוחתים. הוסיפו את חמשת הקבצים לבדיקות smoke ב-CI כך שפריסת CMS לא תוכל לשבור אותם בשקט.
+
+> קובצי `.well-known/*` מגיעים אליהם במיעוט משמעותי מהרצות המשימה של סוכנים כיום, אך כשסוכן אכן מגיע אליהם הערך גבוה. זה תומך בדירוג ההשפעה 3. ככל שמרשמי ARD ייכנסו לפעולה ויתחילו לסרוק את `ai-catalog.json`, צפוי שההגעה תעלה.
 
 ## מקורות
 - [OpenAI Plugin Manifest](https://openai.com/index/chatgpt-plugins/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [A2A (Agent2Agent) Agent Card spec](https://a2a-protocol.org/latest/specification/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) ([repo](https://github.com/a2aproject/A2A?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide))
 - [Model Context Protocol - discovery](https://modelcontextprotocol.io/specification?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [Google Agentic Resource Discovery (ARD)](https://agenticresourcediscovery.org/spec)
 
 ## כיצד Forter יכולה לעזור
 

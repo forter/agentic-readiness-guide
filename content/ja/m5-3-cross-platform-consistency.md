@@ -30,7 +30,7 @@ forterApplies: 'partial'
 
 ## 参考資料
 - [Open Graph protocol](https://ogp.me/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [MCP server initialization spec](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#initialization)
+- [MCP のバージョニングと互換性](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Apps in ChatGPT](https://help.openai.com/en/articles/11487775-apps-in-chatgpt?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 
 ## Forter による支援

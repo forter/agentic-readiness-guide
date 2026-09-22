@@ -13,7 +13,7 @@ forterApplies: 'no'
 # 2.3  エージェント向けにドキュメントを整える
 
 ## 概要と理由
-エージェントが連携を推薦するかどうかを天秤にかけるとき、それはあなたの `/docs` を読み、ページにあるもので判断します - マーケティングコピーをクリックして通り抜け、本物のリファレンスを探しに行くことはしません。ドキュメントがエージェントにとって機能するのは、**深さ**（クイックスタート、認証のウォークスルー、複数言語の実行可能なコードサンプル、完全なエンドポイントリファレンス）と **引用可能性**（名前のある著者、日付入りの具体的な数字、正確なエンドポイントパス、書かれたとおりに動くコード）の両方を備えているときです。[Stripe API リファレンス](https://stripe.com/docs/api?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) は、エージェントグレードのドキュメントの代表例です。すでにドキュメントサイトや開発者ポータルを運営しているなら、ゼロからのやり直しではありません - それにリンクし、その水準まで引き上げてください。
+ドキュメントページは、エージェントのタスク実行の中で最も到達されるサーフェスです。Cloudflare は、ドキュメントの全面刷新の後、トークンが31%減り、回答が66%速くなったと計測しました。エージェントが連携を推薦するかどうかを天秤にかけるとき、それはあなたの `/docs` を読み、ページにあるもので判断します - マーケティングコピーをクリックして通り抜け、本物のリファレンスを探しに行くことはしません。ドキュメントがエージェントにとって機能するのは、**深さ**（クイックスタート、認証のウォークスルー、複数言語の実行可能なコードサンプル、完全なエンドポイントリファレンス）と **引用可能性**（名前のある著者、日付入りの具体的な数字、正確なエンドポイントパス、書かれたとおりに動くコード）の両方を備えているときです。[Stripe API リファレンス](https://stripe.com/docs/api?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) は、エージェントグレードのドキュメントの代表例です。すでにドキュメントサイトや開発者ポータルを運営しているなら、ゼロからのやり直しではありません - それにリンクし、その水準まで引き上げてください。
 
 `/docs` の一部は、後のガイドラインで完成します - 認証のウォークスルーは [3.1](./m3-1-oauth-discovery.md)、生成されるエンドポイントリファレンスは [4.1](./m4-1-openapi-spec.md) で。ここで構造と引用可能性の基準を整えておけば、それらのページは、作り直しを強いることなく、すんなり収まります。
 
@@ -30,9 +30,16 @@ forterApplies: 'no'
 5. **主張を引用可能にする。** すべてのガイドに、資格を伴う名前付き著者（「By {氏名}, {役職}」）。日付入りで具体的な数字（「2026年Q1時点で、午後2時より前に発注された注文の94%が、当社の英国フルフィルメントネットワーク全域で当日出荷される」）- 「大規模でも超高速」ではなく。あなたが使うすべてのドメイン用語を解決する用語集ページを設け、エージェントがあなたの専門用語（それが何であれ - `chargeback`、`webhook`、`idempotency-key`、`tenant`）を、あなたのオリジンを離れずに解決できるようにします。
 6. **コンテンツネゴシエーションでエージェントに Markdown を提供する。** エージェントは、必要なわずかな事実に到達するためにレンダリングされた HTML をかき分けることで、トークンの税を払います。*同じ正規 URL* 上で Markdown を要求できるようにしてください。リクエストが `Accept: text/markdown` を伴うとき、Markdown 表現を `Content-Type: text/markdown; charset=utf-8` - 登録済みのメディアタイプ（[RFC 7763](https://www.rfc-editor.org/rfc/rfc7763.html?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)）であり、非推奨の `text/x-markdown` や未登録の `application/markdown` では **ない** - で返し、そして **必ず** `Vary: Accept` を設定して、CDN が HTML をキャッシュして次のエージェントに渡してしまわないようにします。要求された型を本当に生成できないときにのみ `406 Not Acceptable` を返し、品質値を尊重します（Markdown に対する `q=0` は HTML にフォールバックしなければなりません）。`.md` の「双子」URL も公開する場合、それらは補完であって代替ではありません - エージェントがパスを推測せずに発見できるよう、それぞれを `Link: </page.md>; rel="alternate"; type="text/markdown"`（[RFC 8288](https://datatracker.ietf.org/doc/html/rfc8288?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)）で広告してください。正規のレシピとスタックごとの手順は [acceptmarkdown.com](https://acceptmarkdown.com?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide) にあります。Cloudflare の *Markdown for Agents* は、アプリを一切変更せずにエッジでネゴシエーション全体を行います。
 
+7. **ページをエージェントのコンテキスト予算内に収める。** [Agent-Friendly Documentation Spec](https://agentdocsspec.com)（Mintlify、オープンソースのチェッカーは [github.com/agent-ecosystem/afdocs](https://github.com/agent-ecosystem/afdocs)）は、ページサイズを重要な要因として挙げています。エージェントのコンテキストウィンドウを超えるページは切り詰められ、末尾の内容が丸ごと失われます。ドキュメントページは1ページあたり約30,000トークン未満を目指し、長いリファレンスは単一の巨大ページではなくエンドポイントごとのページに分割してください。
+8. **URL の安定性を保つ。** エージェントはセッションをまたいでドキュメントの URL をブックマークし、再取得します。リダイレクトのない URL 変更は、すべて壊れた引用になります。移動したページにはリダイレクトを維持し、頻繁に変わる日付ベースやハッシュベースの URL を避け、ドキュメントの URL 構造を公開 API として扱ってください。
+9. **ページに日付を付け、正確に保つ。** すべてのドキュメントページに `dateModified`（または目に見える「最終更新」行）を追加します。日付のないページには鮮度のシグナルがありません。エージェントには、それが現在の API を説明しているのか、2年前の API を説明しているのかが判断できません。90日以上更新されていないページにフラグを立てる CI チェックと組み合わせてください。
+10. **ドキュメントを認証の背後に置かない。** ドキュメントページは、ログインなしで公開アクセスできるべきです。認証の壁に囲まれたドキュメントは、オンボーディングフローを完了していないエージェントには見えません - そして、ほとんどのエージェントはリファレンス資料を読むためだけにそれを試みたりしません。
+
 ## 参考資料
 - [Stripe API リファレンス](https://stripe.com/docs/api?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [Diataxis ドキュメンテーションフレームワーク](https://diataxis.fr?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [OpenAPI 仕様](https://spec.openapis.org/oas/latest.html?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [acceptmarkdown.com - Markdown コンテンツネゴシエーション](https://acceptmarkdown.com?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 - [RFC 7763 - The text/markdown Media Type](https://www.rfc-editor.org/rfc/rfc7763.html?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [Agent-Friendly Documentation Spec](https://agentdocsspec.com)
+- [afdocs オープンソースチェッカー](https://github.com/agent-ecosystem/afdocs)

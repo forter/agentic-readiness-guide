@@ -18,12 +18,12 @@ MCP Apps lets your tool render an **interactive UI component inside the chat con
 Worth knowing: the host environment is **shared with components from other tools**. Treat your bundle like any other public surface - signed, CSP-locked, network-scoped to your origin. The standards are well-defined; the build is non-trivial enough that most teams pair with Forter, which ships the component layer ready-made.
 
 ## Scoring
-- **Effort 4/5** - Three new surfaces at once: the MCP Apps capability declaration on your server, the component bundles themselves (host-compatible, CSP-locked, signed), and the JSON Schema contract that ties tools to UI resources. The spec is stabilizing.
+- **Effort 4/5** - Three new surfaces at once: the MCP Apps capability declaration on your server, the component bundles themselves (host-compatible, CSP-locked, signed), and the JSON Schema contract that ties tools to UI resources. The spec has now stabilized - `2026-07-28` promoted Apps out of `experimental` into a first-class extension, so the target stopped moving.
 - **Impact 5/5** - Tools with inline UI dramatically out-convert tools that hand the user a link.
 - **Visual change: none** *(on your site)* - components render inside the chat host (ChatGPT, Claude). Nothing on your own site changes.
 
 ## Steps
-1. **Enable the Apps capability on your MCP server.** In the `initialize` response, advertise `capabilities.experimental.apps` (per the modelcontextprotocol-ext-apps draft). Requires the MCP server foundation from [4.4](./m4-4-mcp-server.md) already running with Streamable HTTP.
+1. **Enable the Apps capability on your MCP server.** As of MCP `2026-07-28` this is no longer an experimental flag: Apps is an **official extension**, advertised in your `server/discover` result as `capabilities.extensions["io.modelcontextprotocol/ui"]` with a settings object naming the MIME types you serve (`{"mimeTypes": ["text/html;profile=mcp-app"]}`). Servers still on `2025-11-25` or earlier used `capabilities.experimental.apps`; if you support both eras, advertise both. Requires the MCP server foundation from [4.4](./m4-4-mcp-server.md) already running with Streamable HTTP. Note the matching rule on the other side: a `2026-07-28` server **MUST NOT** rely on a capability the client did not declare, so a host that never advertises `io.modelcontextprotocol/ui` should get plain-text results, not a broken component.
 2. **Build host-compatible component bundles.** Use `@modelcontextprotocol/ext-apps` to compile React/Svelte/Vue components into the host-runtime format (served with the MCP Apps MIME type `text/html;profile=mcp-app`). Bundles must be self-contained and signed so the host can verify provenance before mounting. The host enforces a strict baseline CSP (`default-src 'none'`, `object-src 'none'`); declare any origins you legitimately need through the spec's `_meta.ui.csp` allowlists (`connectDomains`, `resourceDomains`, `frameDomains`, `baseUriDomains`) rather than relaxing CSP wholesale.
 3. **Expose `ui://` resources with stable, versioned URIs.** Each component lives at a URI like `ui://yourcompany.com/checkout/payment-picker@1.4.0`. Version every URI: agents cache aggressively, and an unversioned change bricks conversations mid-flight.
 4. **Tag tools with `_meta.ui.resourceUri`.** On every tool that should render inline, set `_meta.ui.resourceUri` to the matching `ui://` URI. The agent host reads this metadata at tool-listing time and pre-warms the component before invocation.
@@ -31,9 +31,11 @@ Worth knowing: the host environment is **shared with components from other tools
 6. **Sandbox aggressively.** CSP-lock every bundle, sign every asset, scope every network call to your origin only, and never accept arbitrary HTML from the tool's response. Assume the host environment is shared with components from other tools.
 
 ## References
-- [MCP Apps extension spec](https://github.com/modelcontextprotocol/ext-apps?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP Apps extension](https://modelcontextprotocol.io/extensions/apps/overview?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP Apps extension spec (repo)](https://github.com/modelcontextprotocol/ext-apps?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
+- [MCP extension negotiation](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#extension-negotiation)
 - [MCP resources reference](https://modelcontextprotocol.io/docs/concepts/resources?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
-- [MCP `_meta` field reference](https://modelcontextprotocol.io/specification/2025-06-18/basic?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#meta)
+- [MCP `_meta` field reference](https://modelcontextprotocol.io/specification/2026-07-28/basic/index?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide#meta)
 - [CSP - Content Security Policy](https://www.w3.org/TR/CSP3/?utm_source=forter&utm_medium=referral&utm_campaign=agentic-readiness-guide)
 
 ## How Forter helps
